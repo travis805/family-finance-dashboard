@@ -32,7 +32,11 @@ back to a local `family_finance.db` for offline work.
 
 ## Deploy (Streamlit Community Cloud)
 
+Community Cloud's free tier allows only one private app per workspace, so this app
+deploys as a **public** app gated by a passphrase (`APP_PASSWORD`). Nothing renders and
+no query runs until the passphrase matches; the Turso token stays server-side.
+
 1. New app, point at this repo's `app.py`.
-2. Advanced settings -> Secrets: paste the same `TURSO_DATABASE_URL` and
-   `TURSO_AUTH_TOKEN`.
-3. Sharing -> restrict to specific viewers.
+2. Advanced settings -> Secrets: paste `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, and a
+   long `APP_PASSWORD`.
+3. Deploy. The app is public-URL but locked behind the passphrase.
