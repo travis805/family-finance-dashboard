@@ -1,0 +1,14 @@
+# Secrets — never commit
+.streamlit/secrets.toml
+.env
+.env*.local
+
+# Databases — they live in Turso now, never in the repo
+*.db
+*.db-wal
+*.db-shm
+
+# Python
+venv/
+__pycache__/
+*.pyc
