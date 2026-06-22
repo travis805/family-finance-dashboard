@@ -45,6 +45,44 @@ st.markdown("""
 
 IMPORT_DIR = Path(__file__).parent / "Import Files"
 
+# ── Access gate ──────────────────────────────────────────────────────────────
+
+def check_password() -> bool:
+    """Gate the app behind a passphrase stored as a server-side secret.
+
+    APP_PASSWORD comes from Streamlit secrets or the environment. If it is not
+    set (local/offline dev), the app is open. On the public Cloud deployment the
+    secret is set, so nothing renders and no query runs until it matches.
+    """
+    import hmac
+
+    expected = None
+    try:
+        expected = st.secrets.get("APP_PASSWORD")
+    except Exception:
+        pass
+    expected = expected or os.environ.get("APP_PASSWORD")
+
+    if not expected:
+        return True  # no passphrase configured -> open (dev convenience)
+    if st.session_state.get("authed"):
+        return True
+
+    st.title("💰 Family Finance")
+    with st.form("login"):
+        pw = st.text_input("Passphrase", type="password")
+        if st.form_submit_button("Enter"):
+            if hmac.compare_digest(pw, expected):
+                st.session_state["authed"] = True
+                st.rerun()
+            else:
+                st.error("Incorrect passphrase")
+    return False
+
+
+if not check_password():
+    st.stop()
+
 
 # ── DB init ──────────────────────────────────────────────────────────────────
 
