@@ -1214,19 +1214,16 @@ def render_monthly_activity():
         return [""] * len(row)
 
     def _fmt_cell(v):
-        if v is None or v == "" or (isinstance(v, float) and v == 0.0):
+        if v is None or v == "" or (isinstance(v, float) and (pd.isna(v) or v == 0.0)):
             return "—"
         if isinstance(v, (int, float)):
             return f"${v:,.0f}"
         return str(v)
 
-    format_dict = {col: _fmt_cell for col in month_labels}
+    for col in month_labels:
+        display_df[col] = display_df[col].map(_fmt_cell)
 
-    styled = (
-        display_df.style
-        .apply(_style_row, axis=1)
-        .format(format_dict, na_rep="—")
-    )
+    styled = display_df.style.apply(_style_row, axis=1)
 
     st.dataframe(styled, use_container_width=True, hide_index=True)
 
