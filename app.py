@@ -559,6 +559,7 @@ def render_budget():
         # ── Add / remove subcategories ────────────────────────────────────
         with st.expander("🗂️ Manage subcategories"):
             subcats_by_cat = db.get_subcategories_by_category(conn)
+            all_categories = sorted(budget_df["category"].tolist())
 
             # Current subcategory table
             if subcats_by_cat:
